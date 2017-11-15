@@ -2,34 +2,32 @@ package frego
 
 import "time"
 
-
-
-type JobNode struct {
-     jobID              string
-     jobLabel           string
-     jobCreationTime    time.Time
-     jobStatus          JobStatus
-     jobStore           string
-     jobStoreParams     []byte
-     jobAlgorithm       string
-     jobAlgorithmParams []byte
-     jobTaskCPU         float64
-     jobTaskMEM         float64
-     jobTaskVertices    int
-     jobTaskTimeoutSec  int
+type Job struct {
+	ID              string
+	Label           string
+	CreationTime    time.Time
+	Status          JobStatus
+	Store           string
+	StoreParams     []byte
+	Algorithm       string
+	AlgorithmParams []byte
+	TaskCPU         float64
+	TaskMEM         float64
+	TaskVertices    int
+	TaskTimeoutSec  int
 }
 
-type JobNodeStatus int
+type JobStatus int
 
 const (
-      _ JobNodeStatus = iota
-      JobNodeCreated
-      JobNodeRunning
-      JobNodeCompleted
-      JobNodeCancelled
-      JobNodeFailed
+	_ JobStatus = iota
+	JobCreated
+	JobRunning
+	JobCompleted
+	JobCancelled
+	JobFailed
 )
 
-func (j JobNode) CanCancel() bool {
-     return j.jobStatus == JobNodeCreated || j.jobStatus == JobNodeRunning
+func (j Job) CanCancel() bool {
+	return j.Status == JobCreated || j.Status == JobRunning
 }

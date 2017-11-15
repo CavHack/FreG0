@@ -2,10 +2,10 @@ package main
 
 import(
 
-    "github.com/CavHack/FreG0/enc"
-    "github.com/CavHack/FreG0/exec/graph"
-    "github.com/CavHack/FreG0/protos"
-    "github.com/CavHack/FreG0/store"
+    "github.com/CavHack/FreGO/enc"
+    "github.com/CavHack/FreGO/exec/graph"
+    "github.com/CavHack/FreGO/protos"
+    "github.com/CavHack/FreGO/store"
     "github.com/gogo/protobuf/proto"
   	"github.com/golang/glog"
   	exec "github.com/mesos/mesos-go/api/v0/executor"
@@ -22,7 +22,7 @@ const (
 
   )
 
-  type FreG0Executor struct {
+  type FreGOExecutor struct {
 
     execTaskParamsEncoder enc.Encoder
   	execTaskResultEncoder enc.Encoder
@@ -31,50 +31,50 @@ const (
 
   }
 
-  func NewFreG0Executor() *FreG0Executor {
+  func NewFreGOExecutor() *FreGOExecutor {
   	graphPoolCache := cache.New(cacheExpiration, cacheCleanupInterval)
   	graphPoolCache.OnEvicted(onGraphPoolEvicted)
 
-  	return &FreG0Executor{
+  	return &FreGOExecutor{
   		graphPoolCache:        graphPoolCache,
   		execTaskParamsEncoder: enc.NewProtobufEncoder(func() proto.Message { return new(protos.ExecTaskParams) }),
   		execTaskResultEncoder: enc.NewProtobufEncoder(func() proto.Message { return new(protos.ExecTaskResult) }),
   	}
   }
 
-  func (executor *FreG0Executor) Registered(driver exec.ExecutorDriver, execInfo *mesos.ExecutorInfo, fwinfo *mesos.FrameworkInfo, slaveInfo *mesos.SlaveInfo) {
+  func (executor *FreGOExecutor) Registered(driver exec.ExecutorDriver, execInfo *mesos.ExecutorInfo, fwinfo *mesos.FrameworkInfo, slaveInfo *mesos.SlaveInfo) {
   	glog.Infof("registered Executor on slave %s", slaveInfo.GetHostname())
   }
 
-  func (executor *FreG0Executor) Reregistered(driver exec.ExecutorDriver, slaveInfo *mesos.SlaveInfo) {
+  func (executor *FreGOExecutor) Reregistered(driver exec.ExecutorDriver, slaveInfo *mesos.SlaveInfo) {
   	glog.Infof("Re-registered Executor on slave %s", slaveInfo.GetHostname())
   }
 
-  func (executor *FreG0Executor) Disconnected(driver exec.ExecutorDriver) {
+  func (executor *FreGOExecutor) Disconnected(driver exec.ExecutorDriver) {
   	glog.Infof("Executor disconnected.")
   }
 
-  func (executor *FreG0Executor) LaunchTask(driver exec.ExecutorDriver, taskInfo *mesos.TaskInfo) {
+  func (executor *FreGOExecutor) LaunchTask(driver exec.ExecutorDriver, taskInfo *mesos.TaskInfo) {
   	go executor.processLaunchTask(driver, taskInfo)
   }
 
-  func (executor *FreG0Executor) KillTask(driver exec.ExecutorDriver, taskID *mesos.TaskID) {
+  func (executor *FreGOExecutor) KillTask(driver exec.ExecutorDriver, taskID *mesos.TaskID) {
   	glog.Infof("Kill task")
   }
 
-  func (executor *FreG0Executor) FrameworkMessage(driver exec.ExecutorDriver, msg string) {
+  func (executor *FreGOExecutor) FrameworkMessage(driver exec.ExecutorDriver, msg string) {
   	glog.Infof("Got framework message: %s", msg)
   }
 
-  func (executor *FreG0lExecutor) Shutdown(driver exec.ExecutorDriver) {
+  func (executor *FreGOExecutor) Shutdown(driver exec.ExecutorDriver) {
   	glog.Infof("Shutting down the executor")
   }
 
-  func (executor *FreG0Executor) Error(driver exec.ExecutorDriver, err string) {
+  func (executor *FreGOExecutor) Error(driver exec.ExecutorDriver, err string) {
   	glog.Infof("Got error message: %s", err)
   }
 
-  func (executor *FreG0Executor) processLaunchTask(driver exec.ExecutorDriver, taskInfo *mesos.TaskInfo) {
+  func (executor *FreGOExecutor) processLaunchTask(driver exec.ExecutorDriver, taskInfo *mesos.TaskInfo) {
   	glog.Infof("Launching task %s", taskInfo.GetName())
 
   	executor.sendStatusUpdate(driver, taskInfo.TaskId, mesos.TaskState_TASK_RUNNING, nil)
@@ -100,7 +100,7 @@ const (
   	}
   	defer executor.releaseGraph(taskParams, graph)
 
-  	task, err := NewPregelTask(taskParams, graph)
+  	task, err := NewFreGOTask(taskParams, graph)
   	if err != nil {
   		glog.Errorf("job %s - failed to initialize task %s; error: %v", jobID, taskID, err)
   		executor.sendStatusUpdate(driver, taskInfo.TaskId, mesos.TaskState_TASK_FAILED, nil)
@@ -145,7 +145,7 @@ const (
   	}
   }
 
-  func (executor *FreG0Executor) getGraph(params *protos.ExecTaskParams) (*graph.Graph, error) {
+  func (executor *FreGOExecutor) getGraph(params *protos.ExecTaskParams) (*graph.Graph, error) {
   	graphPool, err := executor.getGraphPool(params)
   	if err != nil {
   		return nil, err
@@ -156,7 +156,7 @@ const (
   	return graphPool.Get(prevSuperstep, vrange)
   }
 
-  func (executor *FreG0Executor) releaseGraph(params *protos.ExecTaskParams, graph *graph.Graph) {
+  func (executor *FreGOExecutor) releaseGraph(params *protos.ExecTaskParams, graph *graph.Graph) {
   	graphPool, err := executor.getGraphPool(params)
   	if err != nil {
   		glog.Errorf("job %s - failed to return graph to pool; error=%v", params.JobId, err)
@@ -166,7 +166,7 @@ const (
   	graphPool.Release(graph)
   }
 
-  func (executor *FreG0Executor) getGraphPool(params *protos.ExecTaskParams) (*graph.Pool, error) {
+  func (executor *FreGOExecutor) getGraphPool(params *protos.ExecTaskParams) (*graph.Pool, error) {
   	executor.mutex.Lock()
   	defer executor.mutex.Unlock()
 

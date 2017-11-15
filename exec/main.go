@@ -17,9 +17,9 @@ import (
        exec "github.com/mesos/mesos-go/api/v0/executor"
        "github.com/pkg/errors"
 
-       _ "github.com/CavHack/FreG0/aggregator" // register default aggregators
-       _ "github.com/CavHack/FreG0/algorithms" // register default algorithms
-       _ "github.com/CavHack/FreG0/cassandra"  // register Cassandra store
+       _ "github.com/CavHack/FreGO/aggregator" // register default aggregators
+       _ "github.com/CavHack/FreGO/algorithms" // register default algorithms
+       _ "github.com/CavHack/FreGO/cassandra"  // register Cassandra store
 )
 
 
@@ -185,7 +185,7 @@ func main() {
 
 func run() error {
      dconfig := exec.DriverConfig{
-     	     Executor: NewPregelExecutor(),
+     	     Executor: NewFreGOExecutor(),
 	     }
 
 	     driver, err := exec.NewMesosExecutorDriver(dconfig)
@@ -204,4 +204,4 @@ func run() error {
 		      }
 
 		      return nil
-}
+        }
