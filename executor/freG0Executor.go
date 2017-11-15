@@ -2,8 +2,8 @@ package main
 
 import(
 
-    "github.com/CavHack/FreGO/enc"
-    "github.com/CavHack/FreGO/exec/graph"
+    "github.com/CavHack/FreGO/encoding"
+    "github.com/CavHack/FreGO/executor/graph"
     "github.com/CavHack/FreGO/protos"
     "github.com/CavHack/FreGO/store"
     "github.com/gogo/protobuf/proto"
@@ -123,7 +123,7 @@ const (
   	executor.sendStatusUpdate(driver, taskInfo.TaskId, mesos.TaskState_TASK_FINISHED, taskResult)
   }
 
-  func (executor *FreG0Executor) sendStatusUpdate(driver exec.ExecutorDriver, taskId *mesos.TaskID,
+  func (executor *FreGOExecutor) sendStatusUpdate(driver exec.ExecutorDriver, taskId *mesos.TaskID,
   	state mesos.TaskState, taskResult *protos.ExecTaskResult) {
   	status := &mesos.TaskStatus{
   		TaskId: taskId,

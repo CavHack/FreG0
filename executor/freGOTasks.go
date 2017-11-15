@@ -5,14 +5,14 @@ import (
 
 	"github.com/CavHack/FreGO/aggregator"
 	"github.com/CavHack/FreGO/algorithm"
-	"github.com/CavHack/FreGO/exec/graph"
-	"github.com/CavHack/FreGO/exec/messagesProcessor"
+	"github.com/CavHack/FreGO/executor/graph"
+	"github.com/CavHack/FreGO/executor/messagesProcessor"
 	"github.com/CavHack/FreGO/protos"
 	"github.com/CavHack/FreGO/store"
 	"github.com/pkg/errors"
 )
 
-type PregelTask struct {
+type FreGOTask struct {
 	jobID     string
 	store     store.GraphStore
 	algorithm algorithm.Algorithm
